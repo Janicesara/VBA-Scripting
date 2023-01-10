@@ -1,0 +1,71 @@
+
+Sub Loop_stock_Analysis_Test():
+
+
+Stock_Analysis()
+
+
+End Sub
+ 
+
+Sub Stock_Analysis()
+Dim LastRow As Integer
+Dim totalVolume As LongLong
+Dim OpenPrice As Double
+Dim ClosePrice As Double
+Dim Ticker As String
+Dim DollarsChange As Double
+Dim PercentageChange As Double
+Dim SummaryRow As Integer
+
+For Each Ws In Worksheets
+Ws.Activate
+
+SummaryRow = 2
+LastRow = Cells(Rows.Count, 1).End(xlUp).Row
+OpenPrice = Cells(2, 3).Value
+
+
+
+Range("I1").Value = "Ticker"
+Range("J1").Value = "Yearly Change"
+Range("K1").Value = "Percentage Change "
+Range("L1").Value = "Total Volume"
+
+
+
+For currentRow = 2 To LastRow
+totalVolume = totalVolume + Cells(currentRow, 7)
+
+
+If Cells(currentRow + 1, 1).Value <> Cells(currentRow, 1).Value Then
+Ticker = Cells(currentRow, 1).Value
+ClosePrice = Cells(currentRow, 6).Value
+DollarsChange = ClosePrice - OpenPrice
+PercentageChange = DollarsChange / OpenPrice
+
+
+Cells(SummaryRow, 9).Value = Ticker
+Cells(SummaryRow, 10).Value = DollarsChange
+Cells(SummaryRow, 11).Value = PercentageChange
+Cells(SummaryRow, 12).Value = totalVolume
+
+If DollarsChange >= 0 Then
+Cells(SummaryRow, 10).Interior.ColorIndex = 4
+Else
+Cells(SummaryRow, 10).Interior.ColorIndex = 3
+End If
+
+SummaryRow = SummaryRow + 1
+
+OpenPrice = Cells(currentRow + 1, 3).Value
+
+totalVolume = 0
+End If
+Next currentRow
+
+Range("K2:K" & SummaryRow).Style = "Percent"
+
+Next Ws
+
+End Sub
